@@ -41,19 +41,19 @@ public class AddressBook{
 		System.out.println();
 		System.out.println("------------------Add Person--------------------");
 		System.out.println("Enter the Person's firsName");
-		String firsName= sc.next();
+		String firsName= sc.nextLine();
 
 		System.out.println("Enter the Person's lastName");
-		String lastName = sc.next();
+		String lastName = sc.nextLine();
 
 		System.out.println("Enter the Person's address");
-		String address = sc.next();
+		String address = sc.nextLine();
 
 		System.out.println("Enter the Person's city");
-		String city = sc.next();
+		String city = sc.nextLine();
 
 		System.out.println("Enter the Person's state");
-		String state = sc.next();
+		String state = sc.nextLine();
 
 		System.out.println("Enter the Person's zip(Please enter a number)");
 		int zip = sc.nextInt();
@@ -76,8 +76,7 @@ public class AddressBook{
 		System.out.println("---------------Edit Person--------------------");
 		System.out.println("Phone Number of the person that you want to edit (Please enter a number) :");
 
-		long phoneNumber = sc.nextLong();
-		Person person = findPerson(phoneNumber);
+		Person person = findPerson(getPhoneNumberAsIndex());
 		
 		if(person==null){
 			System.out.println("Number is not present in addressBook");
@@ -139,14 +138,12 @@ public class AddressBook{
 	}
 
 	private void deletePerson(){
-		Scanner sc = new Scanner(System.in);
 		System.out.println();
 		System.out.println("---------------Delete Person--------------------");
 		while(true){
 
 			System.out.println("Phone Number of the person that you want to delete:");
-			long phoneNumber = sc.nextLong();
-			Person person = findPerson(phoneNumber);
+			Person person = findPerson(getPhoneNumberAsIndex());
 
 			if(person==null){
 				System.out.println("Number is not present in addressBook");
@@ -175,17 +172,15 @@ public class AddressBook{
 
 	}
 
-	private Person findPerson(){
+	private long getPhoneNumberAsIndex(){
 		Scanner sc = new Scanner(System.in);
-
-		System.out.println("Phone Number of the person that you want to find:");
 		long phoneNumber = sc.nextLong();
-		return findPerson(phoneNumber);
+		return phoneNumber;
 
 	}
 	
 	private void sortEntries(){
-		
+		List<Person> entriesOfPersons = this.entries;
 		Scanner sc = new Scanner(System.in);
 		System.out.println();
 		System.out.println("---------------Sort Entries--------------------");
@@ -197,16 +192,16 @@ public class AddressBook{
 		sc.nextLine();
 		switch(opt){
 			case 1:
-						Collections.sort(entries, Compare.firstNameComparator);
+						Collections.sort(entriesOfPersons, Compare.firstNameComparator);
 						break;
 			case 2:
-						Collections.sort(entries, Compare.fullNameComparator);
+						Collections.sort(entriesOfPersons, Compare.fullNameComparator);
 						break;
 			case 3:
-						Collections.sort(entries, Compare.addressComparator);
+						Collections.sort(entriesOfPersons, Compare.addressComparator);
 						break;
 			case 4:
-						Collections.sort(entries, Compare.zipComparator);
+						Collections.sort(entriesOfPersons, Compare.zipComparator);
 						break;
 			case 5:
 						break;
@@ -216,19 +211,21 @@ public class AddressBook{
 			}
 
 		System.out.println("Sorting Complete");    	
-		this.displayEntries();
+		this.displayEntries(entriesOfPersons);
 		System.out.println("--------------------------------------------");
 
 	}
 
-	private void displayEntries(){
+	private void displayEntries(List<Person> entriesOfPersons){
 		System.out.println("---------------Entries--------------------");
-		for (Person person : entries) {
+		for (Person person : entriesOfPersons) {
 			System.out.println(person.getInformation());
-			System.out.println("-------------------------------");
-		
+			System.out.println("-------------------------------");		
 		}
+	}
 
+	private void displayEntries(){
+		displayEntries(this.entries);
 	}
 
 	private void saveAddressBookToFile(){
@@ -259,6 +256,7 @@ public class AddressBook{
 		System.out.println("\t5.\t Sort Address Book Entries");
 		System.out.println("\t6.\t Display Address Book");
 		System.out.println("\t7.\t Save Address Book");
+		System.out.println("\t8.\t Exit");
 		System.out.println("--------------------------------------------");
 	}
 
@@ -287,7 +285,14 @@ public class AddressBook{
 				case 3:			addressBook.deletePerson();
 								break;
 
-				case 4:			addressBook.findPerson();
+				case 4:			System.out.println("Phone Number of the person that you want to find:");
+								Person person = addressBook.findPerson(addressBook.getPhoneNumberAsIndex());
+								if(person==null){
+									System.out.println("no match found");
+								}
+								else{
+									System.out.println(person.getInformation());
+								}
 								break;
 				
 				case 5:			addressBook.sortEntries();
@@ -299,15 +304,13 @@ public class AddressBook{
 				case 7:			addressBook.saveAddressBookToFile();
 								break;
 
+				case 8:			choice=false;
+								break;
+
 				default:
 								System.out.println("wrong choice!!");
 
 			}
-
-			System.out.println("want to continue?\n1.Yes\t2.No");
-			choice = sc.nextInt()==1;
-			sc.nextLine();
-
 		}
 
 				
